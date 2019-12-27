@@ -2,3 +2,61 @@
  Fake code, Yue Weng, Dec23, 2019
  remake the assignment list for self usage and practice
 */
+
+Requirements for the liblist design
+
+Part C: List Library 
+Lists are composed of elements called nodes (NODE data type). Each node is able to hold one item. An item is any C data type that can be pointed to - so your node structure should have a (void *) field in it to reference the item held by that node. For the purposes of this assignment, though, your code should allow a user to create several lists WHERE EACH LIST HAS A HOMOGENOUS DATA TYPE.
+The implementation of the library shall have no dynamic memory allocation on a per-list or per-node basis. The standard way of doing this is to define two static memory blocks at compile time: one for LISTs and one for NODEs. These are separate data types and test code knows only about LISTs and items. It knows nothing about NODEs. It is permissible to dynamically allocate a large chunk of memory for a collection of lists or nodes, but only one allocation at the beginning of the program execution. Any other uses of the malloc() function inside the library will result in an implementation grade of 0. Also note that there is no ListInit() function, so you will have to find some way to know when the first execution happens. Define a maximum number of LISTs and a maximum number of NODEs and implement the library such that any LIST may have between 0 and the maximum number of nodes at different points in time, but no more than the maximum number of nodes may be in use at any one point in time. Think of the array of NODEs as a pool that may be shared between the lists. Over time, there can also be a different number of LISTs actively being used.
+You must create the user-defined type LIST, implement functions to manipulate lists, and compile the code to be used as a library. An instance of type LIST refers to a particular list and will be an argument to most of your list manipulation routines.
+You are to implement the following list manipulation routines:
+ 1. LIST *ListCreate() makes a new, empty list, and returns its reference on success. Returns a NULL pointer on failure.
+2. int ListCount(list) returns the number of items in list.
+3. void *ListFirst(list) returns a pointer to the first item in list and makes the first
+item the current item.
+4. void *ListLast(list) returns a pointer to the last item in list and makes the last
+item the current one.
+5. void *ListNext(list) advances the list's current node by one, and returns a pointer
+to the new current item. If this operation attempts to advances the current item
+beyond the end of the list, a NULL pointer is returned.
+6. void *ListPrev(list) backs up the list's current node by one, and returns a pointer
+to the new current item. If this operation attempts to back up the current item beyond
+the start of the list, a NULL pointer is returned.
+7. void *ListCurr(list) returns a pointer to the current item in list.
+8. int ListAdd(list, item) adds the new item to list directly after the current item,
+and makes item the current item. If the current pointer is at the end of the list, the item
+is added at the end. Returns 0 on success, -1 on failure.
+9. int ListInsert(list, item) adds item to list directly before the current item, and
+makes the new item the current one. If the current pointer is at the start of the list, the
+item is added at the start. Returns 0 on success, -1 on failure.
+10. int ListAppend(list, item) adds item to the end of list, and makes the new item
+the current one. Returns 0 on success, -1 on failure.
+11. int ListPrepend(list, item) adds item to the front of list, and makes the new
+item the current one. Returns 0 on success, -1 on failure.
+12. void *ListRemove(list) Return current item and take it out of list. Make the next
+item the current one.
+13. void ListConcat(list1, list2) adds list2 to the end of list1. The current pointer
+is set to the current pointer of list1. List2 no longer exists after the operation.
+14. void ListFree(list, itemFree) delete list. itemFree is a pointer to a routine that
+frees an item. It should be invoked (within ListFree) as: (*itemFree)
+     (itemToBeFreed);
+15. void *ListTrim(list) Return last item and take it out of list. The current pointer
+shall be the new last item in the list.
+16. void *ListSearch(list, comparator, comparisonArg) searches list starting at
+the current item until the end is reached or a match is found. In this context, a match is determined by the comparator parameter. This parameter is a pointer to a routine that takes as its first argument an item pointer, and as its second argument comparisonArg. Comparator returns 0 if the item and comparisonArg don't match (i.e. didn't find it), or 1 if they do (i.e. found it). Exactly what constitutes a match is up to the implementor of comparator. If a match is found, the current pointer is left at the matched item and the pointer to that item is returned. If no match is found, the current pointer is left at the end of the list and a NULL pointer is returned.
+Take special note of the fact that many of these routines are mirrors of each other. ListPrepend is almost the same as ListAppend, so code and debug in stages, so that you know you have parts of the program working correctly from day one of starting to work on this assignment. Do not leave testing and integration until the last days before the assignment is due. Do not add any other procedures in the entire implementation without checking with the instructor or TA. The requested procedures are the API (Application
+
+ Programming Interface) to the list library. That means that you may not call an API function from inside the API.
+Avoid traversing or searching the list whenever possible. It is possible to avoid traversing/searching in every function, except of course, ListSearch() (and ListFree()).
+Implementation Hints/Requirements
+Your code for the solution for Part C must consist of (at least) five files: list.h, list_adders.c, list_movers.c, list_removers.c, mytestlist.c. There will be lines in the Makefile to compile your test program and the class test program. The mytestlist need only run on Linux.
+Note that there is no separate makefile for Part C. There is one makefile for the entire assignment. That means your makefile must know if it is being executed on Windows or Linux and only compile the appropriate portions of the program as requested.
+The header file (list.h) contains structure definitions and function prototypes, while the source code files (.c) contain function definitions and variable definitions. Never define variables in header files. This causes untold grief. The test program is the only file that should have a main() function, and it should call the list library routines to create, populate, and manipulate the lists. As mentioned in the next section, we will provide a simple sample test program to give you some clue as to the kind of testing you could do for the library. Implement in stages, putting the code for each type of list operation in the appropriate source file. ListCurr() and ListCount() should go in list_movers.c.
+Since the list item is an arbitrary type, your library CANNOT KNOW how to display it, how to search for it, or how to remove it. These details must all be specified in your test program and communicated to your library via function pointers. All display debugging that shows the details of an item must be located in the test program.
+Part of your mark will be determined by the rigorous nature of your testing methodology.
+Compiling and Testing
+Your makefile will compile your list implementation as a library archive (i.e .a file). You must include, in your makefile, the commands to compile a test program (to be provided by the marking script) as your application. The file to do the marker's list testing IS going to be named testlist.c. Unless otherwise specified, where the assignment requires test files and test results from you, you are free to name the *executable* that executes your tests in any reasonable way. DO NOT hand in any source file named testlist.c. If you do, our script will overwrite that file and your testing will disappear.
+Mark Allocation. Marks will be allocated roughly equally between implementation, and testing in the final phase hand-in. A small portion of the marks will be allocated to proper use of SVN and adequate construction of the makefile lines appropriate for each component.
+OPTIONAL EXTRA CREDIT PORTION (20 marks)
+
+Memory Allocation Principles. In this version of the Part C, you are to implement the list memory structure so that there are a variable number of list nodes and list headers. This does not mean that you allocate them on-demand. You shall have compile-time constants MIN_LISTS and MIN_NODES, which specify the minimum amount of memory (array size) to allocate for each of these data structures in ONE malloc for each data structure. If obtaining a new node or a new list fails, you are to double the amount of memory allocated for whichever resource has filled up (see the man page for realloc()). If you determine that less than half the allocated memory is being used for lists or nodes, you must divide the amount of memory by 2 and copy the used nodes or lists into the new space. Of course, you never go below MIN_LISTS or MIN_NODES. This is the way Java implements arrays and vectors, and the way current versions of the LINUX kernel handle the task_struct array.
