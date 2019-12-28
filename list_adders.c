@@ -76,7 +76,8 @@ int ListCount(LIST* list)
 
 
 /*
- * Function: Add the new item to the list
+ * Function: 
+ *  Add the new item to the list, make the new node after current node
  * Input:
  *  list, LIST pointer of the target list
  *  item, void pointer of the item which will be added to the list
@@ -102,6 +103,7 @@ int ListAdd(LIST* list, void* item)
       tempNode->data = item;
     }else{
       tempNode = &NODE_MEM[NODE_COUNT++];
+      tempNode->data = item;
     }
 
     // assign the node
@@ -133,19 +135,160 @@ int ListAdd(LIST* list, void* item)
   }
 }
 
+
+/*
+ * Function: 
+ *  Add the new item to the list, make new node before current node
+ * Input:
+ *  list, LIST pointer of the target list
+ *  item, void pointer of the item which will be added to the list
+ * Output:
+ *  if success, return 0.
+ *  if fail, return -1. <basically, that means no free space for use>
+ */
 int ListInsert(LIST* list, void* item)
 {
-  return 0;
+  NODE* tempNode;
+  int free_index;
+  // find a free node from pool
+  if (NODE_COUNT<MAX_NODE)
+  {
+    // find a node
+    // always try to use the freed node first
+    if (NODE_FREE_NUM>0)
+    {
+      NODE_COUNT++;
+      NODE_FREE_NUM--;
+      tempNode =(NODE*)FreeNODES->data;
+      FreeNODES = FreeNODES->next;
+      tempNode->data = item;
+    }else{
+      tempNode = &NODE_MEM[NODE_COUNT++];
+      tempNode->data = item;
+    }
+
+    // assign the node
+    if (list->count == 0)
+    {
+      list->head = tempNode;
+      list->tail = tempNode;
+      list->count++;
+      list->cursor = tempNode;
+    }else
+    {
+      tempNode->prev = list->cursor->prev;
+      tempNode->next = list->cursor;
+      // if the cursor is the head of list
+      if(list->cursor->prev == NULL)
+      {
+        list->head = tempNode;
+      }
+      list->count++;
+    }
+    return 0;
+  }
+  else
+  {
+    // No node can be assigned
+    return -1;
+  }
 }
 
+
+/*
+ * Function: 
+ *  Add the new item to the list, make new node as the new tail
+ * Input:
+ *  list, LIST pointer of the target list
+ *  item, void pointer of the item which will be added to the list
+ * Output:
+ *  if success, return 0.
+ *  if fail, return -1. <basically, that means no free space for use>
+ */
 int ListAppend(LIST* list, void* item)
 {
-  return 0;
+  NODE* tempNode;
+  int free_index;
+  // find a free node from pool
+  if (NODE_COUNT<MAX_NODE)
+  {
+    // find a node
+    // always try to use the freed node first
+    if (NODE_FREE_NUM>0)
+    {
+      NODE_COUNT++;
+      NODE_FREE_NUM--;
+      tempNode =(NODE*)FreeNODES->data;
+      FreeNODES = FreeNODES->next;
+      tempNode->data = item;
+    }else{
+      tempNode = &NODE_MEM[NODE_COUNT++];
+      tempNode->data = item;
+    }
+
+    // assign the node
+    if (list->count == 0)
+    {
+      list->head = tempNode;
+      list->tail = tempNode;
+      list->count++;
+      list->cursor = tempNode;
+    }else
+    {
+      tempNode->prev = list->tail;
+      list->tail = tempNode;
+      list->count++;
+    }
+    return 0;
+  }
+  else
+  {
+    // No node can be assigned
+    return -1;
+  }
 }
 
 int ListPrepend(LIST* list, void* item)
 {
-  return 0;
+  NODE* tempNode;
+  int free_index;
+  // find a free node from pool
+  if (NODE_COUNT<MAX_NODE)
+  {
+    // find a node
+    // always try to use the freed node first
+    if (NODE_FREE_NUM>0)
+    {
+      NODE_COUNT++;
+      NODE_FREE_NUM--;
+      tempNode =(NODE*)FreeNODES->data;
+      FreeNODES = FreeNODES->next;
+      tempNode->data = item;
+    }else{
+      tempNode = &NODE_MEM[NODE_COUNT++];
+      tempNode->data = item;
+    }
+
+    // assign the node
+    if (list->count == 0)
+    {
+      list->head = tempNode;
+      list->tail = tempNode;
+      list->count++;
+      list->cursor = tempNode;
+    }else
+    {
+      tempNode->next = list->head;
+      list->head = tempNode;
+      list->count++;
+    }
+    return 0;
+  }
+  else
+  {
+    // No node can be assigned
+    return -1;
+  }
 }
 
 
