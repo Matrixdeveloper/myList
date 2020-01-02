@@ -64,7 +64,8 @@ void *ListPrev(list);
 
 void *ListCurr(list);
 
-void *ListSearch(list, void* comparator, void* comparisonArg);
+void 
+*ListSearch(list, int (*comparator)(void*, void*), void* comparisonArg);
 
 
 // Removers functions
