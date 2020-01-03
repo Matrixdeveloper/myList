@@ -47,9 +47,10 @@ LIST * ListCreate()
     {
       LIST_COUNT++;
       LIST_FREE_NUM--;
-      tempList = (LIST*) FreeLISTS->data;
       // unhook the head & update the anchor
-      FreeLISTS = FreeLISTS->next;
+      tempList = FreeLISTS;
+      FreeLISTS = (LIST*)FreeLISTS->head;
+      tempList->head = NULL;
       return tempList;
     }
     else{

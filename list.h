@@ -17,6 +17,9 @@ extern int MAX_LIST;
 extern int MAX_NODE;
 extern int LIST_COUNT;
 extern int LIST_NODE;
+extern int LIST_FREE_NUM;
+extern int NODE_FREE_NUM;
+
 
 // define the standard doubly linked list structure
 typedef struct NODE
@@ -38,6 +41,8 @@ typedef struct LIST
 typedef struct LIST* list;
 typedef void* item;
 
+NODE* FreeNODES;
+LIST* FreeLISTS;
 
 // Adder functions
 LIST * ListCreate();
@@ -73,6 +78,6 @@ void *ListRemove(list);
 
 void ListConcat(list, list);
 
-void ListFree(list, item);
+void ListFree(list, void (*itemFree)(void*));
 
 void *ListTrim(list);
